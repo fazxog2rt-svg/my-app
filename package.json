@@ -11,7 +11,13 @@
   "dependencies": {
     "next": "16.2.5",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "next-auth": "^4.24.7",
+    "@prisma/client": "^5.8.0",
+    "zustand": "^4.4.7",
+    "axios": "^1.6.5",
+    "date-fns": "^3.0.0",
+    "clsx": "^2.1.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
