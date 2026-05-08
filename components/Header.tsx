@@ -1,12 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuthStore } from '@/lib/store';
+import { useCartStore } from '@/lib/store';
 import { useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Header() {
-  const { user, logout } = useAuthStore();
+  const { data: session } = useSession();
+  const { items } = useCartStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await signOut({ redirect: true, callbackUrl: '/' });
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 shadow-sm">
@@ -21,13 +27,19 @@ export default function Header() {
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center gap-8">
+            <Link href="/about" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition">
+              About
+            </Link>
             <Link href="/blog" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition">
               Blog
             </Link>
             <Link href="/shop" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition">
               Shop
             </Link>
-            {user?.role === 'admin' && (
+            <Link href="/contact" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition">
+              Contact
+            </Link>
+            {session?.user && (
               <Link href="/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition">
                 Dashboard
               </Link>
@@ -36,16 +48,31 @@ export default function Header() {
 
           {/* Auth Section */}
           <div className="flex items-center gap-4">
-            {user ? (
+            {/* Cart Icon */}
+            <Link href="/cart" className="relative">
+              <span className="text-2xl">🛒</span>
+              {items.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {items.length}
+                </span>
+              )}
+            </Link>
+
+            {session?.user ? (
               <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  {user.name}
+                <img
+                  src={session.user.image || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + session.user.email}
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300 hidden sm:inline">
+                  {session.user.name}
                 </span>
                 <Link href="/profile" className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
                   Profile
                 </Link>
                 <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
                 >
                   Logout
@@ -75,13 +102,19 @@ export default function Header() {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden pb-4 space-y-2">
+            <Link href="/about" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600">
+              About
+            </Link>
             <Link href="/blog" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600">
               Blog
             </Link>
             <Link href="/shop" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600">
               Shop
             </Link>
-            {user?.role === 'admin' && (
+            <Link href="/contact" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600">
+              Contact
+            </Link>
+            {session?.user && (
               <Link href="/dashboard" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600">
                 Dashboard
               </Link>
