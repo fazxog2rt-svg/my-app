@@ -40,9 +40,23 @@ export default function Header() {
               Contact
             </Link>
             {session?.user && (
-              <Link href="/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition">
-                Dashboard
-              </Link>
+              <>
+                <Link href="/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition">
+                  Dashboard
+                </Link>
+                <Link href="/wishlist" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition">
+                  ❤️ Wishlist
+                </Link>
+                <Link href="/loyalty" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition">
+                  🎁 Loyalty
+                </Link>
+                <Link href="/messages" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition">
+                  💬 Messages
+                </Link>
+                <Link href="/referral" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition">
+                  🔗 Refer
+                </Link>
+              </>
             )}
           </div>
 
@@ -115,9 +129,23 @@ export default function Header() {
               Contact
             </Link>
             {session?.user && (
-              <Link href="/dashboard" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600">
-                Dashboard
-              </Link>
+              <>
+                <Link href="/dashboard" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600">
+                  Dashboard
+                </Link>
+                <Link href="/wishlist" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600">
+                  ❤️ Wishlist
+                </Link>
+                <Link href="/loyalty" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600">
+                  🎁 Loyalty
+                </Link>
+                <Link href="/messages" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600">
+                  💬 Messages
+                </Link>
+                <Link href="/referral" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600">
+                  🔗 Refer
+                </Link>
+              </>
             )}
           </div>
         )}

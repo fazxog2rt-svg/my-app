@@ -1,37 +1,47 @@
 import { NextResponse } from 'next/server';
-import { DEMO_PRODUCTS } from '@/lib/constants';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const search = searchParams.get('search') || '';
-  const category = searchParams.get('category') || '';
-  const sort = searchParams.get('sort') || 'name';
+  try {
+    const { searchParams } = new URL(request.url);
+    const search = searchParams.get('search') || '';
+    const category = searchParams.get('category') || '';
+    const sort = searchParams.get('sort') || 'name';
 
-  let filtered = [...DEMO_PRODUCTS];
+    // Build the query
+    const where: any = {};
+    
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+    
+    if (category && category !== 'all') {
+      where.category = category;
+    }
 
-  // Filter by search
-  if (search) {
-    filtered = filtered.filter(p =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.description.toLowerCase().includes(search.toLowerCase())
-    );
+    // Build sort
+    let orderBy: any = { name: 'asc' };
+    if (sort === 'price-low') {
+      orderBy = { price: 'asc' };
+    } else if (sort === 'price-high') {
+      orderBy = { price: 'desc' };
+    } else if (sort === 'rating') {
+      orderBy = { rating: 'desc' };
+    } else if (sort === 'name') {
+      orderBy = { name: 'asc' };
+    }
+
+    const products = await prisma.product.findMany({
+      where,
+      orderBy,
+    });
+
+    return NextResponse.json({ products });
+  } catch (error) {
+    console.error('Error searching products:', error);
+    return NextResponse.json({ error: 'Failed to search products' }, { status: 500 });
   }
-
-  // Filter by category
-  if (category && category !== 'all') {
-    filtered = filtered.filter(p => p.category === category);
-  }
-
-  // Sort
-  if (sort === 'price-low') {
-    filtered.sort((a, b) => a.price - b.price);
-  } else if (sort === 'price-high') {
-    filtered.sort((a, b) => b.price - a.price);
-  } else if (sort === 'rating') {
-    filtered.sort((a, b) => b.rating - a.rating);
-  } else {
-    filtered.sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  return NextResponse.json({ products: filtered });
 }

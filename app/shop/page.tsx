@@ -1,7 +1,7 @@
 'use client';
 
 import { useCartStore } from '@/lib/store';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import ProductSearch, { SearchFilters } from '@/components/ProductSearch';
 
 interface Product {
@@ -39,7 +39,7 @@ export default function Shop() {
     }
   };
 
-  const handleSearch = async (filters: SearchFilters) => {
+  const handleSearch = useCallback(async (filters: SearchFilters) => {
     setIsLoading(true);
     try {
       const params = new URLSearchParams();
@@ -55,7 +55,7 @@ export default function Shop() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const handleAddToCart = (product: Product) => {
     addItem({
